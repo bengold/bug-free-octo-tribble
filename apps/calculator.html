@@ -5,85 +5,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
     <style>
-        body {
+        * {
             margin: 0;
-            padding: 20px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: white;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem;
         }
 
         .calculator {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            width: 320px;
+            width: 100%;
+            max-width: 400px;
         }
 
         .display {
-            background: #222;
-            color: white;
-            font-size: 2.5em;
-            padding: 20px;
+            background: #f5f5f5;
+            color: #333;
+            font-size: 2rem;
+            padding: 1.5rem;
             text-align: right;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            min-height: 60px;
+            border: 1px solid #ccc;
+            margin-bottom: 1rem;
+            min-height: 4rem;
             word-wrap: break-word;
-            font-family: 'Courier New', monospace;
         }
 
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 0.5rem;
         }
 
         button {
-            padding: 20px;
-            font-size: 1.5em;
-            border: none;
-            border-radius: 10px;
+            padding: 1.5rem;
+            font-size: 1.25rem;
+            border: 1px solid #ccc;
+            background: white;
+            color: #333;
             cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 600;
+            font-family: 'Courier New', Courier, monospace;
         }
 
         button:hover {
-            transform: scale(1.05);
+            background: #f5f5f5;
         }
 
         button:active {
-            transform: scale(0.95);
-        }
-
-        .number {
-            background: #f0f0f0;
-            color: #333;
+            background: #e0e0e0;
         }
 
         .operator {
-            background: #667eea;
-            color: white;
+            background: #f5f5f5;
         }
 
         .equals {
-            background: #4caf50;
+            background: #333;
             color: white;
             grid-column: span 2;
         }
 
+        .equals:hover {
+            background: #000;
+        }
+
         .clear {
-            background: #f44336;
-            color: white;
+            background: #f5f5f5;
         }
 
         .zero {
             grid-column: span 2;
+        }
+
+        @media (max-width: 600px) {
+            .display {
+                font-size: 1.5rem;
+                padding: 1rem;
+                min-height: 3rem;
+            }
+
+            button {
+                padding: 1.25rem;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .display {
+                font-size: 1.25rem;
+            }
+
+            button {
+                padding: 1rem;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -94,24 +116,24 @@
             <button class="clear" onclick="clearDisplay()">C</button>
             <button class="operator" onclick="appendOperator('/')">/</button>
             <button class="operator" onclick="appendOperator('*')">×</button>
-
-            <button class="number" onclick="appendNumber('7')">7</button>
-            <button class="number" onclick="appendNumber('8')">8</button>
-            <button class="number" onclick="appendNumber('9')">9</button>
             <button class="operator" onclick="appendOperator('-')">-</button>
 
-            <button class="number" onclick="appendNumber('4')">4</button>
-            <button class="number" onclick="appendNumber('5')">5</button>
-            <button class="number" onclick="appendNumber('6')">6</button>
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
             <button class="operator" onclick="appendOperator('+')">+</button>
 
-            <button class="number" onclick="appendNumber('1')">1</button>
-            <button class="number" onclick="appendNumber('2')">2</button>
-            <button class="number" onclick="appendNumber('3')">3</button>
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
             <button class="operator" onclick="appendNumber('.')">.</button>
 
-            <button class="number zero" onclick="appendNumber('0')">0</button>
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
             <button class="equals" onclick="calculate()">=</button>
+
+            <button class="zero" onclick="appendNumber('0')">0</button>
         </div>
     </div>
 

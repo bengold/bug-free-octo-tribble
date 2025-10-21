@@ -16,7 +16,6 @@ async function loadApps() {
     } catch (error) {
         console.error('Error loading apps:', error);
         document.getElementById('app-title').textContent = 'No apps found';
-        document.getElementById('app-description').textContent = 'Add apps to apps.json to get started';
     }
 }
 
@@ -28,12 +27,7 @@ function displayApp() {
 
     // Update app info
     document.getElementById('app-title').textContent = app.title;
-    document.getElementById('app-description').textContent = app.description;
     document.getElementById('app-date').textContent = new Date(app.date).toLocaleDateString();
-
-    // Update counter
-    document.getElementById('app-counter').textContent =
-        `App ${currentIndex + 1} of ${apps.length}`;
 
     // Load app in iframe
     document.getElementById('app-frame').src = app.path;

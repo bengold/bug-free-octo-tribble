@@ -7,30 +7,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>App Showcase</h1>
-            <div class="nav-info">
-                <span id="app-counter"></span>
-            </div>
-        </header>
-
-        <div class="app-display">
-            <div class="app-header">
-                <h2 id="app-title"></h2>
-                <p id="app-description"></p>
-                <span id="app-date"></span>
-            </div>
-            <div class="app-container">
-                <iframe id="app-frame" frameborder="0"></iframe>
-            </div>
+    <nav>
+        <button id="prev-btn">←</button>
+        <div class="info">
+            <span id="app-title"></span>
+            <span id="app-date"></span>
         </div>
+        <button id="next-btn">→</button>
+    </nav>
 
-        <nav class="controls">
-            <button id="prev-btn" class="nav-btn">← Previous</button>
-            <button id="next-btn" class="nav-btn">Next →</button>
-        </nav>
-    </div>
+    <main>
+        <iframe id="app-frame" frameborder="0"></iframe>
+    </main>
 
     <script src="app.js"></script>
 </body>

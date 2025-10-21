@@ -5,126 +5,97 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    padding: 20px;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
+    font-family: 'Courier New', Courier, monospace;
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 30px;
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid #ccc;
+    gap: 1rem;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 1;
     text-align: center;
 }
 
-header h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-}
-
-.nav-info {
-    font-size: 1.1em;
-    opacity: 0.9;
-}
-
-.app-display {
-    padding: 30px;
-}
-
-.app-header {
-    margin-bottom: 20px;
-}
-
-.app-header h2 {
-    font-size: 2em;
+#app-title {
+    font-size: 1rem;
     color: #333;
-    margin-bottom: 10px;
 }
 
-.app-header p {
-    font-size: 1.1em;
+#app-date {
+    font-size: 0.875rem;
     color: #666;
-    margin-bottom: 8px;
 }
 
-.app-header span {
-    font-size: 0.9em;
-    color: #999;
+button {
+    background: white;
+    border: 1px solid #ccc;
+    color: #333;
+    font-size: 1.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    flex-shrink: 0;
 }
 
-.app-container {
-    width: 100%;
-    height: 600px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    overflow: hidden;
+button:hover:not(:disabled) {
     background: #f5f5f5;
 }
 
-#app-frame {
-    width: 100%;
-    height: 100%;
-}
-
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    padding: 30px;
-    background: #f8f9fa;
-    border-top: 1px solid #e0e0e0;
-}
-
-.nav-btn {
-    padding: 15px 30px;
-    font-size: 1.1em;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.nav-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-}
-
-.nav-btn:active:not(:disabled) {
-    transform: translateY(0);
-}
-
-.nav-btn:disabled {
-    opacity: 0.5;
+button:disabled {
+    color: #ccc;
     cursor: not-allowed;
 }
 
-@media (max-width: 768px) {
-    header h1 {
-        font-size: 1.8em;
+main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
+}
+
+@media (max-width: 600px) {
+    nav {
+        padding: 0.75rem;
     }
 
-    .app-container {
-        height: 400px;
+    #app-title {
+        font-size: 0.875rem;
     }
 
-    .controls {
-        flex-direction: column;
+    #app-date {
+        font-size: 0.75rem;
     }
 
-    .nav-btn {
-        width: 100%;
+    button {
+        font-size: 1.25rem;
+        width: 2rem;
+        height: 2rem;
+    }
+
+    main {
+        padding: 0.5rem;
     }
 }

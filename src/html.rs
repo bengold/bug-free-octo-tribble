@@ -40,7 +40,25 @@ impl Parser {
     /// Parse a single node
     fn parse_node(&mut self) -> Node {
         if self.next_char() == '<' {
-            self.parse_element()
+            if self.starts_with("<!--") {
+                self.parse_comment();
+                // After skipping comment, parse the next node
+                if !self.eof() && !self.starts_with("</") {
+                    self.parse_node()
+                } else {
+                    Node::text(String::new())
+                }
+            } else if self.starts_with("<!") {
+                self.parse_doctype();
+                // After skipping doctype, parse the next node
+                if !self.eof() && !self.starts_with("</") {
+                    self.parse_node()
+                } else {
+                    Node::text(String::new())
+                }
+            } else {
+                self.parse_element()
+            }
         } else {
             self.parse_text()
         }
@@ -52,18 +70,67 @@ impl Parser {
         assert_eq!(self.consume_char(), '<');
         let tag_name = self.parse_tag_name();
         let attrs = self.parse_attributes();
+        
+        // Check for self-closing tag
+        let self_closing = if self.starts_with("/>") {
+            self.consume_char(); // consume '/'
+            true
+        } else {
+            false
+        };
+        
         assert_eq!(self.consume_char(), '>');
+
+        // For self-closing tags, return immediately with no children
+        if self_closing {
+            return Node::element(tag_name, attrs, Vec::new());
+        }
 
         // Contents
         let children = self.parse_nodes();
 
-        // Closing tag
-        assert_eq!(self.consume_char(), '<');
-        assert_eq!(self.consume_char(), '/');
-        assert_eq!(self.parse_tag_name(), tag_name);
-        assert_eq!(self.consume_char(), '>');
+        // Closing tag (skip if EOF or we're at another opening tag for void elements)
+        if !self.eof() && self.starts_with("</") {
+            assert_eq!(self.consume_char(), '<');
+            assert_eq!(self.consume_char(), '/');
+            let close_tag = self.parse_tag_name();
+            // Be lenient if closing tag doesn't match (malformed HTML)
+            if close_tag != tag_name {
+                eprintln!("Warning: Mismatched tags: expected </{tag_name}>, found </{close_tag}>");
+            }
+            assert_eq!(self.consume_char(), '>');
+        }
 
         Node::element(tag_name, attrs, children)
+    }
+    
+    /// Skip over a comment
+    fn parse_comment(&mut self) {
+        assert!(self.starts_with("<!--"));
+        // Skip <!--
+        self.pos += 4;
+        // Find the end of comment
+        while !self.eof() && !self.starts_with("-->") {
+            self.consume_char();
+        }
+        // Skip -->
+        if self.starts_with("-->") {
+            self.pos += 3;
+        }
+    }
+    
+    /// Skip over a DOCTYPE declaration
+    fn parse_doctype(&mut self) {
+        assert!(self.starts_with("<!"));
+        self.consume_char(); // <
+        self.consume_char(); // !
+        // Consume until we find >
+        while !self.eof() && self.next_char() != '>' {
+            self.consume_char();
+        }
+        if !self.eof() {
+            self.consume_char(); // >
+        }
     }
 
     /// Parse a tag or attribute name
@@ -76,21 +143,37 @@ impl Parser {
         let mut attributes = HashMap::new();
         loop {
             self.consume_whitespace();
-            if self.next_char() == '>' {
+            if self.next_char() == '>' || self.starts_with("/>") {
                 break;
             }
-            let (name, value) = self.parse_attribute();
-            attributes.insert(name, value);
+            if let Some((name, value)) = self.parse_attribute() {
+                attributes.insert(name, value);
+            }
         }
         attributes
     }
 
     /// Parse a single attribute
-    fn parse_attribute(&mut self) -> (String, String) {
+    fn parse_attribute(&mut self) -> Option<(String, String)> {
         let name = self.parse_tag_name();
-        assert_eq!(self.consume_char(), '=');
-        let value = self.parse_attr_value();
-        (name, value)
+        
+        // Handle boolean attributes (no value)
+        self.consume_whitespace();
+        if self.next_char() != '=' {
+            return Some((name, String::new()));
+        }
+        
+        self.consume_char(); // consume '='
+        self.consume_whitespace();
+        
+        let value = if self.next_char() == '"' || self.next_char() == '\'' {
+            self.parse_attr_value()
+        } else {
+            // Unquoted attribute value
+            self.consume_while(|c| !c.is_whitespace() && c != '>' && c != '/')
+        };
+        
+        Some((name, value))
     }
 
     /// Parse an attribute value

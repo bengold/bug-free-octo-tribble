@@ -45,7 +45,19 @@ CSS ↗
    - Builds display list
    - Renders backgrounds
    - Renders borders
+   - Basic text rendering (placeholder)
    - Outputs to pixel buffer
+
+7. **GUI** (`src/gui.rs`)
+   - Window management
+   - Real-time display
+   - Pixel buffer rendering
+   - User input handling
+
+8. **Network** (`src/network.rs`)
+   - HTTP/HTTPS fetching
+   - CSS link extraction
+   - URL resolution
 
 ## Features
 
@@ -57,16 +69,19 @@ CSS ↗
 - Block layout
 - Background colors
 - Border colors and widths
+- Basic text rendering (placeholder characters)
+- GUI window display (live preview)
 - PPM image output
+- URL fetching (HTTP/HTTPS)
+- External CSS loading from <link> tags
 
 **Not Yet Supported:**
-- Inline layout
+- True font rendering (current: placeholder characters)
+- Inline layout (partial support)
 - Flexbox/Grid
 - JavaScript
-- Text rendering
 - Images
 - Events
-- Networking
 - Most CSS properties
 - CSS cascade/inheritance (partial)
 
@@ -76,15 +91,32 @@ CSS ↗
 # Build the project
 cargo build --release
 
-# Run the demo
-cargo run
+# Run with a URL (fetch from the web)
+cargo run --release -- https://example.com
 
-# View the output
-# The program generates output.ppm which you can view with:
-# - GIMP
-# - ImageMagick: convert output.ppm output.png
-# - Any PPM viewer
+# Or run with local example files
+cargo run --release
+
+# The browser will:
+# 1. Fetch HTML from the URL (or load from examples/)
+# 2. Extract and fetch CSS files from <link> tags
+# 3. Parse HTML and CSS
+# 4. Build the DOM, style, and layout trees
+# 5. Render to a pixel buffer
+# 6. Display the result in a GUI window
+# 7. Save output.ppm as a backup
+
+# Controls:
+# - ESC or close window to exit
+# - Window can be resized
 ```
+
+### Alternative: View PPM Output
+
+If the GUI doesn't work on your system, you can still view the output.ppm file:
+- GIMP
+- ImageMagick: `convert output.ppm output.png`
+- Any PPM viewer
 
 ## Example
 
@@ -132,10 +164,16 @@ browser-engine/
 │   ├── css.rs        # CSS parser
 │   ├── style.rs      # Style tree
 │   ├── layout.rs     # Layout engine
-│   └── painting.rs   # Rendering
+│   ├── painting.rs   # Rendering
+│   ├── gui.rs        # GUI window
+│   └── network.rs    # HTTP fetching
 ├── examples/
 │   ├── test.html     # Example HTML
-│   └── test.css      # Example CSS
+│   ├── test.css      # Example CSS
+│   ├── demo.html     # Demo HTML
+│   ├── demo.css      # Demo CSS
+│   ├── links.html    # Link test
+│   └── links.css     # Link styling
 └── Cargo.toml        # Dependencies
 ```
 

@@ -136,8 +136,55 @@ impl<'a> LayoutBox<'a> {
     fn layout(&mut self, containing_block: Dimensions) {
         match self.box_type {
             BoxType::BlockNode(_) => self.layout_block(containing_block),
-            BoxType::InlineNode(_) => {}
-            BoxType::AnonymousBlock => {}
+            BoxType::InlineNode(_) => self.layout_inline(containing_block),
+            BoxType::AnonymousBlock => self.layout_anonymous_block(containing_block),
+        }
+    }
+
+    fn layout_anonymous_block(&mut self, containing_block: Dimensions) {
+        // Anonymous blocks contain inline children
+        self.dimensions.content.x = containing_block.content.x;
+        self.dimensions.content.y = containing_block.content.y + containing_block.content.height;
+        self.dimensions.content.width = containing_block.content.width;
+        
+        // Layout all inline children
+        for child in &mut self.children {
+            child.layout(self.dimensions);
+            // Update height to accommodate children
+            if child.dimensions.content.height > 0.0 {
+                self.dimensions.content.height = self.dimensions.content.height.max(
+                    child.dimensions.content.y + child.dimensions.content.height - self.dimensions.content.y
+                );
+            }
+        }
+        
+        // Ensure minimum height
+        if self.dimensions.content.height == 0.0 && !self.children.is_empty() {
+            self.dimensions.content.height = 14.0;
+        }
+    }
+
+    fn layout_inline(&mut self, containing_block: Dimensions) {
+        use crate::dom::NodeType;
+        
+        // For inline text nodes, give them some basic dimensions
+        let style_node = self.get_style_node();
+        
+        if let NodeType::Text(text) = &style_node.node.node_type {
+            let text = text.trim();
+            if !text.is_empty() {
+                // Simple text metrics: ~8px per char, 14px height
+                const CHAR_WIDTH: f32 = 8.0;
+                const LINE_HEIGHT: f32 = 14.0;
+                
+                let width = (text.len() as f32 * CHAR_WIDTH).min(containing_block.content.width);
+                let height = LINE_HEIGHT;
+                
+                self.dimensions.content.x = containing_block.content.x;
+                self.dimensions.content.y = containing_block.content.y + containing_block.content.height;
+                self.dimensions.content.width = width;
+                self.dimensions.content.height = height;
+            }
         }
     }
 
